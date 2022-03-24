@@ -1,0 +1,43 @@
+package:
+  name: dummy
+  version: 0.1.0
+
+source:
+  path: .
+
+build:
+  number: 0
+  skip: true  # [not linux]
+
+requirements:
+  host:
+    - openssl
+
+test:
+  commands:
+    - dummy.sh
+
+outputs:
+  - name: dummy-libs
+    requirements:
+      host:
+        - openssl
+    files:
+      - include
+      - lib/dummy*
+    test:
+      commands:
+        - test -f ${PREFIX}/include/dummy.h
+        - test -f ${PREFIX}/lib/dummy.so
+  - name: dummy
+    requirements:
+      host:
+        - openssl
+      run:
+        - {{ pin_subpackage('dummy-libs', exact=True) }}
+    files:
+      - bin
+
+about:
+  license: BSD-3
+  summary: dummy package
